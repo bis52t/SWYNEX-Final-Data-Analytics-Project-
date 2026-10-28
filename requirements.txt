@@ -1,0 +1,70 @@
+# SWYNEX Final Data Analytics Project: Titanic Survival Analysis
+
+Final project of my data analytics internship at SWYNEX Technologies. It covers the full
+workflow: cleaning, exploratory analysis, an interactive dashboard and business insights.
+
+**Live dashboard:** https://bist52t.github.io/SWYNEX-Final-Data-Analytics-Project/
+**Tools:** Python (pandas, matplotlib), HTML/CSS/JavaScript, Git/GitHub
+
+![Dashboard](screenshots/dashboard.png)
+
+## 1. Problem statement
+Which passenger characteristics were linked to survival on the Titanic, and what does this
+tell us about how risk is distributed unevenly when resources are limited? The goal is to
+turn raw passenger records into clear, decision-ready insights.
+
+## 2. Dataset information
+- **Source:** Public Titanic dataset (datasciencedojo/datasets on GitHub)
+- **Size:** 891 passengers, 12 original columns
+- **Key columns:** survived, pclass, sex, age, sib_sp, parch, fare, embarked, cabin
+- **Target:** `survived` (0 = died, 1 = survived)
+
+## 3. Data cleaning (`scripts/clean_data.py`)
+| Issue found | Action taken |
+|---|---|
+| Age missing (177 rows) | Filled with median by class and sex; added `age_imputed` flag |
+| Cabin missing (687 rows, ~77%) | Dropped; kept a `cabin_known` flag |
+| Embarked missing (2 rows) | Filled with most frequent port |
+| Duplicates | Checked for exact and ID duplicates: 0 found |
+| Wrong data types | `pclass`, `sex`, `embarked` set to category; `survived` to int8 |
+| Inconsistent values | Port codes C/Q/S expanded to full names; text trimmed; column names changed to snake_case |
+| Suspicious values | Zero-fare rows flagged and kept |
+
+Result: 0 missing values, correct types, no duplicates, 891 rows kept.
+
+## 4. Analysis (`scripts/eda.py`)
+Summary statistics, survival rates by group, fare outlier detection (IQR method) and a
+correlation matrix. Age analysis uses known ages only, so imputed values do not bias results.
+Charts are in `/charts`.
+
+## 5. Dashboard (`index.html`)
+Interactive, runs in the browser with no installs. It has 5 KPIs, 6 charts and filters for
+sex, class and port. Clicking any bar filters the whole dashboard.
+
+## 6. Key business insights
+1. **Sex was the biggest factor.** Women survived at about 74% vs about 19% for men.
+2. **Class decided access.** 1st class survival was about 63% vs about 24% in 3rd class.
+3. **Fares reflect the same gap.** Higher fares went with higher survival, mostly because
+   they bought 1st class.
+4. **Children and small families did better.** Passengers travelling alone or in large
+   families had lower survival.
+5. **Port was a proxy, not a cause.** Cherbourg passengers survived more (about 55%)
+   mainly because more of them travelled 1st class.
+6. **Data quality changes conclusions.** 20% of ages were missing, so the age findings
+   rest on known ages only.
+
+**Recommendations (applying the lessons to real safety planning):**
+- Evacuation plans should check that every group has equal access to exits and lifeboats,
+  not just priority groups.
+- Safety information and drills should reach lower-fare and solo travellers specifically.
+- Always report how much data was imputed before presenting conclusions.
+
+## 7. Limitations
+Correlation is not causation, the dataset has only 891 of about 2,200 people on board, and
+imputed ages are estimates.
+
+## 8. How to run
+pip install -r requirements.txt
+python scripts/clean_data.py
+python scripts/eda.py
+Open `index.html` in a browser and select `data/cleaned/titanic_cleaned.csv` if asked.
